@@ -1,0 +1,17 @@
+body {
+  text-align: center;
+  overflow: hidden;
+}
+
+div {
+  padding-top: 100px
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+.sections {
+  margin-top: 50px;
+  height: 100vh;
+}
