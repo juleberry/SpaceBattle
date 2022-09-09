@@ -2,13 +2,9 @@
 //  SPACE * BATTLE 
 // *-*-*-*-*-*-*-*-*
 
-
-// let quitButton = document.getElementById('quitGame')
-// quitButton.addEventListener('click', function (){
-//   quitLink = document.getElementById('#quitgame')
-// })
-
-// reload page -- document.location.reload()
+let remainingHull
+let remainingMainHull
+let target
 
 // base ship to build other ships
 class Ship {
@@ -37,20 +33,24 @@ class MainShip extends Ship {
   } else if (target.hull <= 0) {
       console.log(`You destroyed ${target.name}!`)
       userChoice()
+  } else if (allAlien[i] === undefined) {
+    console.log(`Congratulations, ${userShip.name}! You have destroyed all of the Alien Ships and saved planet Earth!`)
   } else if (target.hull > 0) {
       target.attackMain(this)
       (console.log(`You missed!! AlienShip has ${target.hull} hull.`))
     }
   }
   fightAlien(target) {
-    let remainingHull = target.hull -= this.firepower
+    remainingHull = target.hull -= this.firepower
     if (remainingHull > 0) {
-        console.log("You hit the alien ship!");
-        console.log(`AlienShip now has ${remainingHull} hull.`);
-        allAlien[i].attackMain()
+        console.log(`You attacked with ${this.firepower} firepower and hit the alien ship!`)
+        if (remainingHull > 0) {
+        console.log(`AlienShip now has ${remainingHull} hull.`)
+      }
+        allAlien[i].attackMain(userShip)
       } else if (remainingHull <= 0) {
         allAlien.shift()
-        console.log("You have destroyed AlienShip!")
+        console.log(`You attacked with ${this.firepower} firepower and destroyed the AlienShip!`)
         userChoice()
       }
     }
@@ -70,19 +70,24 @@ class AlienShip extends Ship {
     }
   attackMain(targetUser) {
     if (this.hull > 0 && targetUser.hull > 0) {
-    this.fightMain()
+    this.fightMain(userShip)
     } else if (remainingAlienHull <= 0) {
       allAlien.shift()
       console.log("You have destroyed AlienShip!")
-      this.userChoice()
+      userChoice()
     }
   }
   fightMain(targetUser) {
-    let remainingMainHull = targetUser.hull - this.firepower
-      console.log('AlienShip hit you!')
+      remainingMainHull = targetUser.hull - this.firepower
+      console.log(`AlienShip hit you with ${this.firepower} firepower!`)
+      if (remainingMainHull > 0) {
       console.log(`You now have ${remainingMainHull} hull.`)
       userShip.attackAlien(this)
+    } else {
+      console.log(`${userShip.name} has been destroyed. Earth is doomed!`)
+      console.log("Click 'Quit Game' to Quit or Play Again.")
     }
+  }
 }
 
 // -----------
@@ -110,65 +115,72 @@ const allAlien = [alienShip1 , alienShip2, alienShip3, alienShip4 , alienShip5, 
 
 const userChoice = () => {
   // prompt choice to continue or 'retreat'
-  confirm("Ready to fight next AlienShip?")
-if (confirm) {
-    userShip.attackAlien();
-  } else {
-    userShip.retreat() //if choice is false quit game
+if (confirm(`Ready to fight next AlienShip?\nClick "OK" to continue or "Cancel" to quit.`)) {
+    userShip.attackAlien(this);
+} else {
+    retreat() //if choice is false quit game
   }
 }
   
 const retreat = () => {
-    if (confirm("OK to Quit or Cancel to Keep Playing") == true) {
-      console.log("Play Again Later");
-      document.location.reload()
-      // return to start game area/button
-    } else {
-      console.log("Keep Going!");
-    }
+  if (confirm(`Are you sure you want to quit?\n Click "OK" to Quit or "Cancel" to continue.`) == true) {
+    text = "Play Again Later";
+    window.location.reload()
+  } else {
+    text = "Keep Going!";
+  }
   }
 
 // *******************
 // -- START OF GAME --
-// setting up text and button layout/flow
-// function startGame
-// Introduction
-// Part 1
-// Earth has been attacked by a horde of aliens! You are the captain of the [insert name -- USS Assembly], on a mission to destroy every last alien ship.
-// Part 2
-
-// ------------------
-// -- WINDOW ALERT --
-// ------------------
-// alert("Hello! I am an alert box!!");
+// *******************
+console.log(`Greetings!\nEarth has been attacked by a horde of aliens!\nYou are the captain of the ${userShip.name} on a mission to destroy every last alien ship.`)
 
 const startGame = () => {
-  console.log(`Earth has been attacked by a horde of aliens! You are the captain of the ${userShip.name}, on a mission to destroy every last alien ship.`)
-for (i = 0; i < allAlien.length; i++) {
-    let target = allAlien[i]
-      while (allAlien[i].hull > 0) {
+  if(confirm(`Ready to attack?\nClick "OK" to attack or "Cancel" to Quit`)) {
+    for (i = 0; i < allAlien.length; i++) {
+    target = allAlien[i]
+      while (target.hull > 0) {
+        console.log(`${userShip.name} VS AlienShip ${target.name}...`)
         userShip.attackAlien(target);
-      } if (allAlien[i].hull <= 0) {
-        console.log(`${userShip.name} destroyed all of the alien ships and saved Earth!`)
-      } else if (userShip.hull <= 0) {
+      } if (userShip.hull <= 0) {
         console.log(`${userShip.name} has been destroyed. Earth is doomed!`)
+        console.log("Click 'Quit Game' to Quit or Play Again.")
+      } else if (target === undefined) {
+        console.log(`Congratulations, ${userShip.name}! You have destroyed all of the Alien Ships and saved planet Earth!`)
       }
+    }
   }
 }
+
 
 // ---------------------------
 // --- button click events ---
 // ---------------------------
+const beginGame = () => {
+  // let gameInfoLoc = document.getElementById('gameInfo')
+  // let subtitle = document.getElementById('subtitle')
+  // subtitle.style.display = 'none';
+  // let title = document.getElementById('title')
+  // title.style.fontSize = "2rem"
+  // let shipImage = document.createElement('img')
+  // gameInfoLoc.parentNode.insertBefore(shipImage, gameInfoLoc)
+  // shipImage.setAttribute('src', 'images/spaceship-clipart.png')
+  // shipImage.style.height = '30%'
+  console.log('Battle the aliens as you try to destroy them with your lasers.\nGet ready!')
+  startGame()
+}
+
 let startButton = document.getElementById('startButton')
-startButton.addEventListener('click', () => {
-  startGame() // use the for loop to input each alien here somehow
-})
+startButton.addEventListener('click', beginGame, { passive: false });
 
 let quitAlert = document.getElementById('quitGame')
 quitAlert.addEventListener('click', () => {
   let text
 if (confirm("Are you sure you want to quit?") == true) {
   text = "Play Again Later";
+  window.location.reload()
+
 } else {
   text = "Keep Going!";
 }
