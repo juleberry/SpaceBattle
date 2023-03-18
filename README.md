@@ -1,5 +1,4 @@
 # SpaceBattle
-### Per Scholas Week 5 Project
 #### Text-based game (played in the Developer Tools Console)
 
 "Greetings!
